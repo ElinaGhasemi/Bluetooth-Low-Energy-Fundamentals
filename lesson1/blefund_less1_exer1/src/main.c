@@ -20,6 +20,7 @@
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/bluetooth/gatt.h>
 
+
 #include <bluetooth/services/lbs.h>
 
 #include <zephyr/settings/settings.h>
