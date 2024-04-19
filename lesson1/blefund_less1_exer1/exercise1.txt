@@ -1,0 +1,36 @@
+Summary of Exercise 1.
+
+This exercise enabled me to test a Bluetooth LE connection.
+
+After Building and flashing the application to my device (My device is nrf5340dk_nrf5340): 
+
+1. LED1 blinking on my device, which means the advertising was successful
+2. The log output looks like this: 
+
+*** Booting Zephyr OS build v3.2.99-ncs2 ***
+Starting Bluetooth Peripheral LBS example
+I: 2 Sectors of 4096 bytes
+I: alloc wra: 0, f58
+I: data wra: 0, 140
+Bluetooth initialized
+Advertising successfully started
+
+3. After pressing the SCAN button from the nRF Connect for Mobile app, the device's name (Nordic_LBS) will appear. 
+
+4. Chose Nordic_LBS and press CONNECT
+
+5. LED2 on my device is on (the connection has been established)
+
+6. I could read the status of button 1 using the “Button” Characteristic: 
+
+6.1 By pressing the single down-arrow icon (the “Value” tab in my “Button” Characteristic), I could receive and view the button 1 status. 
+
+6.2 By pressing the icon with several down-arrows, I could enable notifications regarding this Characteristic to be pushed to my app
+
+Now, if I press button 1 on my Nordic board, the value will change to 0X1 (although in Nordic course, they mentioned the value would change to  “Button pressed”)
+
+7. By pressing the up arrow icon next to the LED characteristic, I could toggle LED 3. 
+
+In Nordic course by seleting ON and then SEND, you could turn on the LED but in my app I had write the value 0x01 to turn on and 0x0 to turn of it. 
+
+
