@@ -19,3 +19,24 @@ static const struct bt_data sd[] = {
     /*Include the URL data in the scan response packet*/
     BT_DATA(BT_DATA_URI,url_data,sizeof(url_data)),
 };
+
+void main(void){
+
+    int err;
+    err = bt_enable(NULL);
+    if (err)
+    {
+        LOG_ERR("Bluetooth init failed (err %d)\n", err);
+        return;
+    }
+
+    LOG_INF("Bluetooth initialized\n");
+    
+
+
+
+
+
+
+
+}
