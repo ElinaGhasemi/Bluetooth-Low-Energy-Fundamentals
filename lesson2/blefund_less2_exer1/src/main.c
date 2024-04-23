@@ -10,3 +10,12 @@ static const struct bt_data ad[] = {
 
 
 };
+
+static unsigned char url_data[] ={0x17,'/','/','a','c','a','d','e','m','y','.',
+                                 'n','o','r','d','i','c','s','e','m','i','.',
+                                 'c','o','m'};
+
+static const struct bt_data sd[] = {
+    /*Include the URL data in the scan response packet*/
+    BT_DATA(BT_DATA_URI,url_data,sizeof(url_data)),
+};
