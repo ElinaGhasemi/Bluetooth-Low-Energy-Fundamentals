@@ -1,0 +1,137 @@
+Summary of Exercise 1.
+
+This exercise enabled me to configure My device nrf5340dk_nrf5340 to broadcast non-connectable advertising, making the device act as a beacon so that neighboring scanning devices can see the data. 
+
+These steps need to be taken: 
+
+1.  Include the Bluetooth LE stack in your nRF Connect SDK project. You need to enable CONFIG_BT=y in the prj.conf (Note: it has to be no space before and after =). By enabling this symbol a set of default configurations for the stack will apply:
+
+1.1 Broadcast support (BT_BROADCASTER) is enabled
+1.2 The SoftDevice Controller is used (BT_LL_CHOICE = BT_LL_SOFTDEVICE)
+1.3 The TX Power is set to 0 dBm (BT_CTLR_TX_PWR = BT_CTLR_TX_PWR_0)
+
+2.  Set the Bluetooth LE device name in the prj.conf (This name is a C string and it terminate by NULL.)
+
+ CONFIG_BT_DEVICE_NAME="Nordic_Beacon"
+ 
+ 3. Include the header files of the Bluetooth LE stack needed 
+
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/gap.h>
+
+4. Now we are ready to prepare the advertising data. In this exercise both the advertising packet and the scan response packet were used. 
+
+4.1 Prepare the advertising packet
+
+4.1.1 Declare an array ad[] of type struct bt_data, which will be the advertising packet to send out.
+
+static const struct bt_data ad[] = {
+
+};
+
+4.1.2 prepare the advertising flags (BT_DATA_FLAGS). For this purpose we use macro BT_DATA_BYTES(). 
+
+In this exercise, we are creating a broadcaster with non-connectable advertising. Therefore, we will only set the advertising flag BT_LE_AD_NO_BREDR, to indicate that classic Bluetooth (BR/EDR) is not supported.
+
+BT_DATA_BYTES(BT_DATA_FLAGS, BT_LE_AD_NO_BREDR),
+
+4.1.3 Set the advertising packet data using the helper macro BT_DATA(). In this exercise, we include the complete local name, BT_DATA_NAME_COMPLETE, in the advertising packet. (There are numerous standard data types that can be included in the advertising data (either in the advertising packet or the scan response))
+
+BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
+
+then array ad[] will look like this: 
+
+    static const struct bt_data ad[] = {
+    /*Set the advertising flags */
+    BT_DATA_BYTES(BT_DATA_FLAGS, BT_LE_AD_NO_BREDR),
+    /*Set the advertising packet data*/
+    BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
+};
+
+4.2  Prepare the scan response.
+In the scan response, the URL for Nordic Developer Academy can be included. 
+
+4.2.1 Declare the scan response packet.
+
+We need to declare it as an array sd[] of type struct bt_data in a same way er did for the advertising packet.
+
+static const struct bt_data sd[] = {
+
+};
+
+4.2.2 Declare the URL data to include in the scan response packet.
+
+Note: We need to declare the URL as a static unsigned char array. The first byte specifies the URI Scheme Name String Mapping from the Bluetooth SIG Assigned Numbers Document(https://btprodspecificationrefs.blob.core.windows.net/assigned-numbers/Assigned%20Number%20Types/Assigned_Numbers.pdf). This scheme is used to compress transmitted data. For instance, instead of sending 6 bytes for "https:", we send just one byte (0x17).
+
+static unsigned char url_data[] ={0x17,'/','/','a','c','a','d','e','m','y','.',
+                                 'n','o','r','d','i','c','s','e','m','i','.',
+                                 'c','o','m'};
+                                 
+4.2.3  Include the URL data in the scan response packet. 
+
+BT_DATA(BT_DATA_URI, url_data,sizeof(url_data)), 
+
+then array sd[] will look like this: 
+
+static const struct bt_data sd[] = {
+    /*Include the URL data in the scan response packet*/
+    BT_DATA(BT_DATA_URI,url_data,sizeof(url_data)),
+};
+
+5. Enable the Bluetooth LE stack. 
+
+The function bt_enable() is used to enable the Bluetooth LE stack in the application. This function must be called before any other calls that require communication with the Bluetooth LE hardware (for example, start advertising).  
+
+err = bt_enable(NULL);
+if (err) {
+	LOG_ERR("Bluetooth init failed (err %d)\n", err);
+	return;
+}
+LOG_INF("Bluetooth initialized\n");
+
+
+6. Start advertising. 
+
+Start advertising by calling the function, bt_le_adv_start().
+
+This function expects the advertising parameters as the first parameter. Here, we can either use predefined macros that cover the most common cases or declare a variable of type bt_le_adv_param and set the parameters manually. 
+
+We will be using BT_LE_ADV_NCONN – non-connectable advertising with a minimum advertising interval of 100 ms and a maximum advertising interval of 150 ms.
+
+	err = bt_le_adv_start(BT_LE_ADV_NCONN, ad, ARRAY_SIZE(ad),
+			      sd, ARRAY_SIZE(sd));
+	if (err) {
+		LOG_ERR("Advertising failed to start (err %d)\n", err);
+		return;
+	}
+	
+In addition to the communication part, you need to define and initialize LED, which will be toggled with the interval of 1000. 
+
+   err = dk_leds_init();
+    if (err)
+    {
+        LOG_ERR("LEDs init failed (err %d)\n", err);
+        return;
+    }
+
+    for (;;)
+    {
+        dk_set_led(RUN_STATUS_LED, (++blink_status) % 2);
+        k_sleep(K_MSEC(RUN_LED_BLINK_INTERVAL));
+    }
+    
+7. After building and flashing the application on my board:
+
+LED1 on your board is blinking, indicating that my board is advertising.
+
+8. Open nRF Connect for Mobile on your smartphone. After pressing the SCAN button, the device's name (Nordic_Beacon) will appear. 
+
+9. Tap on Nordic_Beacon to view the advertising data.
+
+The first thing to notice is that there is no CONNECT button displayed. This is because we are advertising non-connectable packets (BT_LE_ADV_NCONN). Let’s now spend some time interpreting the data.
+
+RSSI level is the received signal strength indicator on the receiver side
+Advertising interval. Since we chose BT_LE_ADV_NCONN, the advertising interval is between 100-150 ms
+Advertising flags that we set in step 4.1.2 (Bluetooth Classic BR/EDR not supported)
+The complete local name, that we set in step 2
+The URI data that we included in the scan response packet. Note that you can tap on the OPEN button to open the link directly in a browser.
