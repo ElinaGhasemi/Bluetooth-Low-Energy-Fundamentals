@@ -13,11 +13,14 @@ LOG_MODULE_REGISTER(Lesson2_Exercise2, LOG_LEVEL_INF);
 #define RUN_STATUS_LED DK_LED1
 #define RUN_LED_BLINK_INTERVAL 1000
 
+//Declare the Company identifier (Company ID)
+#define COMPPANY_ID_CODE 0x0059
+
 // Creat an LE Advertising Parameters varible 
 static struct bt_le_adv_param *adv_param = 
     BT_LE_ADV_PARAM(BT_LE_ADV_OPT_NONE, /* No options specified */
     800,  /* Min Advertising Interval 500ms (800*0.625ms) */
-    801;  /* Max Advertising Interval 500.625ms (801*0.625ms) */
+    801,  /* Max Advertising Interval 500.625ms (801*0.625ms) */
     NULL); /* Set to NULL for undirected advertising */
 
 /*Declare the advertising packet */
