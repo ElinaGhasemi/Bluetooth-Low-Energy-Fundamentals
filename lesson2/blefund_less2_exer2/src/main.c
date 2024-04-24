@@ -16,6 +16,13 @@ LOG_MODULE_REGISTER(Lesson2_Exercise2, LOG_LEVEL_INF);
 //Declare the Company identifier (Company ID)
 #define COMPPANY_ID_CODE 0x0059
 
+//Declare the structure for your custom data 
+typedef struct adv_mfg_data {
+    uint16_t company_code; /* Company Identifier Code. */
+    uint16_t number_press; /* Number of times Button 1 is pressed */
+
+}adv_mfg_data_type;
+
 // Creat an LE Advertising Parameters varible 
 static struct bt_le_adv_param *adv_param = 
     BT_LE_ADV_PARAM(BT_LE_ADV_OPT_NONE, /* No options specified */
