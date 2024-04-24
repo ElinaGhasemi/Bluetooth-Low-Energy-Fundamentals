@@ -14,13 +14,11 @@ LOG_MODULE_REGISTER(Lesson2_Exercise1, LOG_LEVEL_INF);
 #define RUN_LED_BLINK_INTERVAL 1000
 
 /*Declare the advertising packet */
-static const struct bt_data ad[] = {
+    static const struct bt_data ad[] = {
     /*Set the advertising flags */
     BT_DATA_BYTES(BT_DATA_FLAGS, BT_LE_AD_NO_BREDR),
     /*Set the advertising packet data*/
     BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
-
-
 };
 
 /*Declare the URL data to include in the scan response */
@@ -65,11 +63,12 @@ void main(void){
     }
     
     LOG_INF("Advertising successfully started\n");
+    //LOG_INF("%d\n", ARRAY_SIZE(sd));
+    //LOG_INF("%d\n", sizeof(sd));
 
-
-
-
-
-
-
+    for (;;)
+    {
+        dk_set_led(RUN_STATUS_LED, (++blink_status) % 2);
+        k_sleep(K_MSEC(RUN_LED_BLINK_INTERVAL));
+    }
 }
