@@ -1,5 +1,17 @@
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/gap.h>
+
+#include <dk_buttons_and_leds.h>
+
+LOG_MODULE_REGISTER(Lesson2_Exercise1, LOG_LEVEL_INF);
+
+#define DEVICE_NAME CONFIG_BT_DEVICE_NAME
+#define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) -1)
+
+#define RUN_STATUS_LED DK_LED1
+#define RUN_LED_BLINK_INTERVAL 1000
 
 /*Declare the advertising packet */
 static const struct bt_data ad[] = {
@@ -11,6 +23,7 @@ static const struct bt_data ad[] = {
 
 };
 
+/*Declare the URL data to include in the scan response */
 static unsigned char url_data[] ={0x17,'/','/','a','c','a','d','e','m','y','.',
                                  'n','o','r','d','i','c','s','e','m','i','.',
                                  'c','o','m'};
