@@ -30,6 +30,8 @@ static struct bt_le_adv_param *adv_param =
     801,  /* Max Advertising Interval 500.625ms (801*0.625ms) */
     NULL); /* Set to NULL for undirected advertising */
 
+    static adv_mfg_data_type adv_mfg_data = {COMPPANY_ID_CODE, 0X00};
+
 /*Declare the advertising packet */
     static const struct bt_data ad[] = {
     /*Set the advertising flags */
