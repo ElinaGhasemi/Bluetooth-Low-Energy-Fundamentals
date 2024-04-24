@@ -35,7 +35,19 @@ static const struct bt_data sd[] = {
 
 void main(void){
 
+    int blink_status = 0;
     int err;
+
+    LOG_INF("Starting Lesson 2 - Exercise 1 \n");
+
+    err = dk_leds_init();
+    if (err)
+    {
+        LOG_ERR("LEDs init failed (err %d)\n", err);
+        return;
+    }
+    
+
     err = bt_enable(NULL);
     if (err)
     {
