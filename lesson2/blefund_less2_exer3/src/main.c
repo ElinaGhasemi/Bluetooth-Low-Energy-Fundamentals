@@ -5,7 +5,7 @@
 
 #include <dk_buttons_and_leds.h>
 
-LOG_MODULE_REGISTER(Lesson2_Exercise2, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(Lesson2_Exercise3, LOG_LEVEL_INF);
 
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) -1)
@@ -18,13 +18,6 @@ LOG_MODULE_REGISTER(Lesson2_Exercise2, LOG_LEVEL_INF);
 
 #define USER_BUTTON DK_BTN1_MSK
 
-//Declare the structure for your custom data 
-typedef struct adv_mfg_data {
-    uint16_t company_code; /* Company Identifier Code. */
-    uint16_t number_press; /* Number of times Button 1 is pressed */
-
-}adv_mfg_data_type;
-
 // Creat an LE Advertising Parameters varible 
 static struct bt_le_adv_param *adv_param = 
     BT_LE_ADV_PARAM(BT_LE_ADV_OPT_NONE, /* No options specified */
@@ -32,14 +25,10 @@ static struct bt_le_adv_param *adv_param =
     801,  /* Max Advertising Interval 500.625ms (801*0.625ms) */
     NULL); /* Set to NULL for undirected advertising */
 
-    static adv_mfg_data_type adv_mfg_data = {COMPANY_ID_CODE, 0x00};
-
 /*Declare the advertising packet */
     static const struct bt_data ad[] = {
-    BT_DATA_BYTES(BT_DATA_FLAGS, BT_LE_AD_NO_BREDR),
+    BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
     BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
-    // Include the Manufacturer Specific Data in the advertising packet.
-    BT_DATA(BT_DATA_MANUFACTURER_DATA, (unsigned char *) &adv_mfg_data, sizeof(adv_mfg_data)),
 };
 
 /*Declare the URL data to include in the scan response */
