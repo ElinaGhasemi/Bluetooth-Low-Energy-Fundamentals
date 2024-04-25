@@ -14,7 +14,7 @@ LOG_MODULE_REGISTER(Lesson2_Exercise2, LOG_LEVEL_INF);
 #define RUN_LED_BLINK_INTERVAL 1000
 
 //Declare the Company identifier (Company ID)
-#define COMPPANY_ID_CODE 0x0059
+#define COMPANY_ID_CODE 0x0059
 
 #define USER_BUTTON DK_BTN1_MSK
 
@@ -32,14 +32,14 @@ static struct bt_le_adv_param *adv_param =
     801,  /* Max Advertising Interval 500.625ms (801*0.625ms) */
     NULL); /* Set to NULL for undirected advertising */
 
-    static adv_mfg_data_type adv_mfg_data = {COMPPANY_ID_CODE, 0X00};
+    static adv_mfg_data_type adv_mfg_data = {COMPANY_ID_CODE, 0x00};
 
 /*Declare the advertising packet */
     static const struct bt_data ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, BT_LE_AD_NO_BREDR),
     BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
     // Include the Manufacturer Specific Data in the advertising packet.
-    BT_DATA(BT_DATA_MANUFACTURE, (unsigned char *) &adv_mfg_data, sizeof(adv_mfg_data)),
+    BT_DATA(BT_DATA_MANUFACTURER_DATA, (unsigned char *) &adv_mfg_data, sizeof(adv_mfg_data)),
 };
 
 /*Declare the URL data to include in the scan response */
@@ -55,8 +55,8 @@ static const struct bt_data sd[] = {
 static void button_changed(uint32_t button_state, uint32_t has_changed){
     if (has_changed & button_state & USER_BUTTON)
     {
-        adv_mfg_data.number_press + = 1;
-        bt_lv_adv_update_data = (ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
+        adv_mfg_data.number_press += 1;
+        bt_le_adv_update_data(ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
     }
     
 
@@ -89,6 +89,7 @@ void main(void){
     err = init_button();
     if(err){
         printk("Button init failed (err %d)\n", err);
+        return;
     }
 
     err = bt_enable(NULL);
@@ -101,7 +102,7 @@ void main(void){
     LOG_INF("Bluetooth initialized\n");
 
     /*Start advertising*/
-    err = bt_le_adv_start(BT_LE_ADV_NCONN, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
+    err = bt_le_adv_start(adv_param, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
     if (err){
         LOG_ERR("Advertising failed to start (err %d)\n", err);
         return;
