@@ -16,6 +16,8 @@ LOG_MODULE_REGISTER(Lesson2_Exercise2, LOG_LEVEL_INF);
 //Declare the Company identifier (Company ID)
 #define COMPPANY_ID_CODE 0x0059
 
+#define USER_BUTTON DK_BTN1_MSK
+
 //Declare the structure for your custom data 
 typedef struct adv_mfg_data {
     uint16_t company_code; /* Company Identifier Code. */
@@ -49,6 +51,16 @@ static const struct bt_data sd[] = {
     /*Include the URL data in the scan response packet*/
     BT_DATA(BT_DATA_URI,url_data,sizeof(url_data)),
 };
+/// Add the definition of callback function and update the advertising data dynamically
+static void button_changed(uint32_t button_state, uint32_t has_changed){
+    if (has_changed & button_state & USER_BUTTON)
+    {
+        adv_mfg_data.number_press + = 1;
+        bt_lv_adv_update_data = (ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
+    }
+    
+
+}
 
 static int init_button(void){
     int err;
@@ -76,7 +88,7 @@ void main(void){
     //Setup buttons on your board
     err = init_button();
     if(err){
-        printk("Button init failed (err %d)\n", err)
+        printk("Button init failed (err %d)\n", err);
     }
 
     err = bt_enable(NULL);
