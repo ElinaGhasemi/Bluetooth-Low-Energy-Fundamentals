@@ -2,6 +2,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/gap.h>
+#include <zephyr/bluetooth/uuid.h>
 
 #include <dk_buttons_and_leds.h>
 
@@ -31,14 +32,10 @@ static struct bt_le_adv_param *adv_param =
     BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
 };
 
-/*Declare the URL data to include in the scan response */
-static unsigned char url_data[] ={0x17,'/','/','a','c','a','d','e','m','y','.',
-                                 'n','o','r','d','i','c','s','e','m','i','.',
-                                 'c','o','m'};
 
 static const struct bt_data sd[] = {
-    /*Include the URL data in the scan response packet*/
-    BT_DATA(BT_DATA_URI,url_data,sizeof(url_data)),
+    /* Include the 16-bytes (128-Bits) UUID of the LBS service in the scan response packet*/
+    BT_DATA_BYTES(BT_DATA_UUID128_ALL,BT_UUID_128_ENCODE(0x00001523, 0x1212, 0xefde, 0x1523, 0x785feabcd123)),
 };
 /// Add the definition of callback function and update the advertising data dynamically
 static void button_changed(uint32_t button_state, uint32_t has_changed){
