@@ -50,7 +50,14 @@ static const struct bt_data sd[] = {
     BT_DATA(BT_DATA_URI,url_data,sizeof(url_data)),
 };
 
-
+static int init_button(void){
+    int err;
+    err = dk_buttons_init(button_changed);
+    if(err){
+        printk("Cannot init buttons (err: %d)\n", err);
+    }
+    return err;
+}
 
 
 void main(void){
@@ -66,7 +73,11 @@ void main(void){
         LOG_ERR("LEDs init failed (err %d)\n", err);
         return;
     }
-    
+    //Setup buttons on your board
+    err = init_button();
+    if(err){
+        printk("Button init failed (err %d)\n", err)
+    }
 
     err = bt_enable(NULL);
     if (err)
