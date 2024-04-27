@@ -3,6 +3,7 @@
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/gap.h>
 #include <zephyr/bluetooth/uuid.h>
+#include <zephyr/bluetooth/addr.h>
 
 #include <dk_buttons_and_leds.h>
 
@@ -13,11 +14,6 @@ LOG_MODULE_REGISTER(Lesson2_Exercise3, LOG_LEVEL_INF);
 
 #define RUN_STATUS_LED DK_LED1
 #define RUN_LED_BLINK_INTERVAL 1000
-
-//Declare the Company identifier (Company ID)
-#define COMPANY_ID_CODE 0x0059
-
-#define USER_BUTTON DK_BTN1_MSK
 
 // Creat an LE Advertising Parameters varible 
 static struct bt_le_adv_param *adv_param = 
@@ -37,25 +33,7 @@ static const struct bt_data sd[] = {
     /* Include the 16-bytes (128-Bits) UUID of the LBS service in the scan response packet*/
     BT_DATA_BYTES(BT_DATA_UUID128_ALL,BT_UUID_128_ENCODE(0x00001523, 0x1212, 0xefde, 0x1523, 0x785feabcd123)),
 };
-/// Add the definition of callback function and update the advertising data dynamically
-static void button_changed(uint32_t button_state, uint32_t has_changed){
-    if (has_changed & button_state & USER_BUTTON)
-    {
-        adv_mfg_data.number_press += 1;
-        bt_le_adv_update_data(ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
-    }
-    
 
-}
-
-static int init_button(void){
-    int err;
-    err = dk_buttons_init(button_changed);
-    if(err){
-        printk("Cannot init buttons (err: %d)\n", err);
-    }
-    return err;
-}
 
 
 void main(void){
@@ -71,12 +49,19 @@ void main(void){
         LOG_ERR("LEDs init failed (err %d)\n", err);
         return;
     }
-    //Setup buttons on your board
-    err = init_button();
+    //Change the random static address */
+    bt_addr_le_t addr;
+    err = bt_addr_le_from_str ("FF:EE:DD:CC:BB:AA", "random", &addr);
     if(err){
-        printk("Button init failed (err %d)\n", err);
-        return;
+        printk("Invalid BT address (err %d)\n", err);
     }
+
+    err = bt_id_create (&addr, NULL);
+    if (err < 0)
+    {
+        printk("Creating new ID failed (err &d)\n", err);
+    }
+    
 
     err = bt_enable(NULL);
     if (err)
