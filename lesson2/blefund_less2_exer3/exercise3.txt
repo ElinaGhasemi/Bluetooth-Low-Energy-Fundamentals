@@ -1,0 +1,168 @@
+Exercise 3
+
+In this exercise, 1. connectable advertising will be covered, 2. I will also include the UUID for the LBS service in the advertising data, which can be used by a central to determine whether it wants to connect based on available services. 3. And at the end, I could learn how to manually configure the Bluetooth LE address of the peripheral. Note, the address will only appear when using Android phones, not iOS.
+
+Exercise steps:
+
+1. Include support for the peripheral role from the Bluetooth LE stack.
+
+Add the following line in prj.conf
+
+CONFIG_BT_PERIPHERAL=y
+
+When you enable this flag, we will get the functionalities needed for the peripheral role, including GATT and ATT. The default number for simultaneous connections CONFIG_BT_MAX_CONN is 1.
+
+2. Set the Bluetooth LE device name: 
+
+2. Change the Bluetooth LE device name
+
+3. Prepare the advertising data.
+
+3.1 Set the flags and populate the device name in the advertising packet.
+
+As done before, we are including the device name in the packet. We are also enabling the discovery mode flag, as the device will act as a Bluetooth LE peripheral, not a beacon. We will set the discovery to BT_LE_AD_GENERAL.
+
+/*Declare the advertising packet */
+    static const struct bt_data ad[] = {
+    BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
+    BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
+};
+
+3.2 Populate the scan response packet with the LBS ser4.1 Include the header file for managing Bluetooth LE addresses.
+
+
+vice UUID.
+
+3.2.1 Include the header file of the UUID helper macros and definitions.
+
+#include <zephyr/bluetooth/uuid.h>
+
+3.2.2 Include the 128-bit UUID of the LBS service in the scan response packet.
+
+static const struct bt_data sd[] = {
+    /* Include the 16-bytes (128-Bits) UUID of the LBS service in the scan response packet*/
+    BT_DATA_BYTES(BT_DATA_UUID128_ALL,BT_UUID_128_ENCODE(0x00001523, 0x1212, 0xefde, 0x1523, 0x785feabcd123)),
+};
+
+4. Set up the random static address.
+
+4.1 Include the header file for managing Bluetooth LE addresses.
+
+#include <zephyr/bluetooth/addr.h>
+
+4.2 Change the random static address.
+
+We will use the function bt_id_create() to set a new random static address. We will use the function bt_addr_le_from_str() to convert a string to a Bluetooth LE address. For types, it supports “random” and “public” addresses
+
+    bt_addr_le_t addr;
+    err = bt_addr_le_from_str("FF:EE:DD:CC:BB:AA", "random", &addr);
+    if (err) {
+        printk("Invalid BT address (err %d)\n", err);
+    }
+
+    err = bt_id_create(&addr, NULL);
+    if (err < 0) {
+        printk("Creating new ID failed (err %d)\n", err);
+    }
+
+Note:Changing the random static address is before bt_enable. 
+
+
+5. Start to advertise connectable advertising.
+
+This is done by calling bt_le_adv_start(). To specify it is connectable advertising, we could either do it by passing BT_LE_ADV_CONN (instead of the BT_LE_ADV_NCONN macro used in exercise 1) as the first parameter. Or we can set an advertising parameter as we did in exercise 2. The advantage of creating an advertising parameter is that it gives us more control over advertising.
+
+5.1 Create the advertising parameter for connectable advertising. Again, this is optional, you could also simply pass BT_LE_ADV_CONN as the first parameter to bt_le_adv_start().
+
+static struct bt_le_adv_param *adv_param = BT_LE_ADV_PARAM((BT_LE_ADV_OPT_CONNECTABLE|BT_LE_ADV_OPT_USE_IDENTITY), 
+                800, /*Min Advertising Interval 500ms (800*0.625ms) */
+                801, /*Max Advertising Interval 500.625ms (801*0.625ms)*/
+                NULL); /* Set to NULL for undirected advertising*/
+                
+5.2 Start advertising by calling bt_le_adv_start() and passing the advertising parameter along with the advertising packet and scan response and their sizes.
+
+    /*Start advertising*/
+    err = bt_le_adv_start(adv_param, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
+    if (err){
+        LOG_ERR("Advertising failed to start (err %d)\n", err);
+        return;
+    }
+
+6. Build and flash the application on your board.
+
+You should notice that LED1 on your board is blinking now. Indicating that your board is advertising.
+
+7. Open nRF Connect for Mobile on your smartphone and start scanning.
+
+We should see now that the address of the device is set to FF:EE:DD:CC:BB:AA , and the UUID of the LBS service is now advertised. Also, we should notice the CONNECT button next to the device name, indicating that the device is advertising in connectable mode.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
