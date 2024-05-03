@@ -1,137 +1,155 @@
-Summary of Exercise 1.
+Summary of Exercise 2.
 
-This exercise enabled me to configure My device nrf5340dk_nrf5340 to broadcast non-connectable advertising, making the device act as a beacon so that neighboring scanning devices can see the data. 
+This exercise enabled me to configure My device nrf5340dk_nrf5340 to dynamically change the advertising data. 
 
-These steps need to be taken: 
+This exercise was built on top of exercise 1 of lesson 2. The goal is to focus on 1. advertising parameters  2. Manufacturer-Specific Data, and 3. update the advertising data dynamically. 
 
-1.  Include the Bluetooth LE stack in your nRF Connect SDK project. You need to enable CONFIG_BT=y in the prj.conf (Note: it has to be no space before and after =). By enabling this symbol a set of default configurations for the stack will apply:
+This exercise will broadcast non-connectable advertising like the previous exercise with the difference of not using a predefined macro to manage the advertising parameters and fine-control the advertising interval.
 
-1.1 Broadcast support (BT_BROADCASTER) is enabled
-1.2 The SoftDevice Controller is used (BT_LL_CHOICE = BT_LL_SOFTDEVICE)
-1.3 The TX Power is set to 0 dBm (BT_CTLR_TX_PWR = BT_CTLR_TX_PWR_0)
+Another great part of this exercise is to learn how to dynamically change the content of advertising data. (Advertising data will be created in a way to represent how many times Button 1 is pressed on the board.)
 
-2.  Set the Bluetooth LE device name in the prj.conf (This name is a C string and it terminate by NULL.)
+Exercise steps:
 
- CONFIG_BT_DEVICE_NAME="Nordic_Beacon"
- 
- 3. Include the header files of the Bluetooth LE stack needed 
+1. Create the variable adv_param of type bt_le_adv_param. To create the variable, we need to use maco BT_LE_ADV_PARAM() 
 
-#include <zephyr/bluetooth/bluetooth.h>
-#include <zephyr/bluetooth/gap.h>
+BT_LE_ADV_PARAM(_options, _int_min, _int_max, _peer)
+Helper to declare advertising parameters inline.
 
-4. Now we are ready to prepare the advertising data. In this exercise both the advertising packet and the scan response packet were used. 
+Parameters
+:
+_options – Advertising Options . For example, choosing which channel (37, 38, 39) to advertise on. There are 19 options available
 
-4.1 Prepare the advertising packet
+_int_min – Minimum advertising interval. (N * 0.625 milliseconds): Less than or equal to the maximum advertising interval. The allowable range for N is 32 to 16384, which translates to 20 ms to 10.24 seconds. The API has predefined values to use for advertising intervals.
 
-4.1.1 Declare an array ad[] of type struct bt_data, which will be the advertising packet to send out.
+_int_max – Maximum advertising interval. (N * 0.625 milliseconds): Larger than or equal to the minimum advertising interval. 
 
-static const struct bt_data ad[] = {
+_peer – Peer address, set to NULL for undirected advertising or address of peer for directed advertising.
 
-};
+For this exercise this options were chosen: 
 
-4.1.2 prepare the advertising flags (BT_DATA_FLAGS). For this purpose we use macro BT_DATA_BYTES(). 
-
-In this exercise, we are creating a broadcaster with non-connectable advertising. Therefore, we will only set the advertising flag BT_LE_AD_NO_BREDR, to indicate that classic Bluetooth (BR/EDR) is not supported.
-
-BT_DATA_BYTES(BT_DATA_FLAGS, BT_LE_AD_NO_BREDR),
-
-4.1.3 Set the advertising packet data using the helper macro BT_DATA(). In this exercise, we include the complete local name, BT_DATA_NAME_COMPLETE, in the advertising packet. (There are numerous standard data types that can be included in the advertising data (either in the advertising packet or the scan response))
-
-BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
-
-then array ad[] will look like this: 
-
-    static const struct bt_data ad[] = {
-    /*Set the advertising flags */
-    BT_DATA_BYTES(BT_DATA_FLAGS, BT_LE_AD_NO_BREDR),
-    /*Set the advertising packet data*/
-    BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
-};
-
-4.2  Prepare the scan response.
-In the scan response, the URL for Nordic Developer Academy can be included. 
-
-4.2.1 Declare the scan response packet.
-
-We need to declare it as an array sd[] of type struct bt_data in a same way er did for the advertising packet.
-
-static const struct bt_data sd[] = {
-
-};
-
-4.2.2 Declare the URL data to include in the scan response packet.
-
-Note: We need to declare the URL as a static unsigned char array. The first byte specifies the URI Scheme Name String Mapping from the Bluetooth SIG Assigned Numbers Document(https://btprodspecificationrefs.blob.core.windows.net/assigned-numbers/Assigned%20Number%20Types/Assigned_Numbers.pdf). This scheme is used to compress transmitted data. For instance, instead of sending 6 bytes for "https:", we send just one byte (0x17).
-
-static unsigned char url_data[] ={0x17,'/','/','a','c','a','d','e','m','y','.',
-                                 'n','o','r','d','i','c','s','e','m','i','.',
-                                 'c','o','m'};
-                                 
-4.2.3  Include the URL data in the scan response packet. 
-
-BT_DATA(BT_DATA_URI, url_data,sizeof(url_data)), 
-
-then array sd[] will look like this: 
-
-static const struct bt_data sd[] = {
-    /*Include the URL data in the scan response packet*/
-    BT_DATA(BT_DATA_URI,url_data,sizeof(url_data)),
-};
-
-5. Enable the Bluetooth LE stack. 
-
-The function bt_enable() is used to enable the Bluetooth LE stack in the application. This function must be called before any other calls that require communication with the Bluetooth LE hardware (for example, start advertising).  
-
-err = bt_enable(NULL);
-if (err) {
-	LOG_ERR("Bluetooth init failed (err %d)\n", err);
-	return;
-}
-LOG_INF("Bluetooth initialized\n");
-
-
-6. Start advertising. 
-
-Start advertising by calling the function, bt_le_adv_start().
-
-This function expects the advertising parameters as the first parameter. Here, we can either use predefined macros that cover the most common cases or declare a variable of type bt_le_adv_param and set the parameters manually. 
-
-We will be using BT_LE_ADV_NCONN – non-connectable advertising with a minimum advertising interval of 100 ms and a maximum advertising interval of 150 ms.
-
-	err = bt_le_adv_start(BT_LE_ADV_NCONN, ad, ARRAY_SIZE(ad),
-			      sd, ARRAY_SIZE(sd));
-	if (err) {
-		LOG_ERR("Advertising failed to start (err %d)\n", err);
-		return;
-	}
+static struct bt_le_adv_param *adv_param =
+	BT_LE_ADV_PARAM(BT_LE_ADV_OPT_NONE,
+	800,
+	801,
+	NULL);
 	
-In addition to the communication part, you need to define and initialize LED, which will be toggled with the interval of 1000. 
+2. Declare the Manufacturer Specific Data
+Manufacturer Specific Data is used to create and include custom data in Bluetooth LE advertising.
 
-   err = dk_leds_init();
-    if (err)
-    {
-        LOG_ERR("LEDs init failed (err %d)\n", err);
-        return;
-    }
+2.1 Declare the Company identifier (Company ID)
 
-    for (;;)
-    {
-        dk_set_led(RUN_STATUS_LED, (++blink_status) % 2);
-        k_sleep(K_MSEC(RUN_LED_BLINK_INTERVAL));
-    }
-    
-7. After building and flashing the application on my board:
+The first two bytes in the Manufacturer Specific Data are the company identifier as registered in Bluetooth SIG in the Assigned Numbers Document(https://www.bluetooth.com/specifications/assigned-numbers/).
 
-LED1 on your board is blinking, indicating that my board is advertising.
+#define COMPANY_ID_CODE            0x0059
 
-8. Open nRF Connect for Mobile on your smartphone. After pressing the SCAN button, the device's name (Nordic_Beacon) will appear. 
+2.2 Declare the structure for your custom data
 
-9. Tap on Nordic_Beacon to view the advertising data.
+To make the custom data, we can creat a structure adv_mfg_data_type that has two members. The first is the company ID and the second is number_press which represents how many times button 1 is pressed on the board. 
 
-The first thing to notice is that there is no CONNECT button displayed. This is because we are advertising non-connectable packets (BT_LE_ADV_NCONN). Let’s now spend some time interpreting the data.
+typedef struct adv_mfg_data {
+	uint16_t company_code;	    /* Company Identifier Code. */
+	uint16_t number_press;      /* Number of times Button 1 is pressed*/
+} adv_mfg_data_type;
 
-RSSI level is the received signal strength indicator on the receiver side
-Advertising interval. Since we chose BT_LE_ADV_NCONN, the advertising interval is between 100-150 ms
-Advertising flags that we set in step 4.1.2 (Bluetooth Classic BR/EDR not supported)
-The complete local name, that we set in step 2
-The URI data that we included in the scan response packet. Note that you can tap on the OPEN button to open the link directly in a browser.
+
+2.3 Define and initialize a variable of type adv_mfg_data_type that we created in the previous step.
+
+static adv_mfg_data_type adv_mfg_data = {COMPANY_ID_CODE,0x00};
+
+In the next step, we can add a button press callback function that updates the number_press and update the advertising data through the function bt_le_adv_update_data().
+
+3. Include the Manufacturer Specific Data in the advertising packet.
+
+/*Declare the advertising packet */
+    static const struct bt_data ad[] = {
+    BT_DATA_BYTES(BT_DATA_FLAGS, BT_LE_AD_NO_BREDR),
+    BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
+    // Include the Manufacturer Specific Data in the advertising packet.
+    BT_DATA(BT_DATA_MANUFACTURER_DATA, (unsigned char *) &adv_mfg_data, sizeof(adv_mfg_data)),
+};
+
+4. Initialize the Buttons library and set a callback function.
+
+To setup an interrupt (call back function) to be called every time Button 1 is pressed, we use use the DK Buttons and LEDs library.
+
+4.1 Add the init_button() function definition in main.c .
+
+static int init_button(void)
+{
+	int err;
+
+	err = dk_buttons_init(button_changed);
+	if (err) {
+		printk("Cannot init buttons (err: %d)\n", err);
+	}
+
+	return err;
+}
+
+4.2 Call init_button() in main()
+
+
+err = init_button();
+
+if (err) {
+
+	printk("Button init failed (err %d)\n", err);
+	return -1;
+
+}
+
+5. Add the definition of the callback function and update the advertising data dynamically.
+
+We can update the advertising data dynamically from inside the button_changed() callback function. We can use the function bt_le_adv_update_data().
+
+static void button_changed(uint32_t button_state, uint32_t has_changed)
+{
+	if (has_changed & button_state & USER_BUTTON) {
+	adv_mfg_data.number_press += 1;
+	bt_le_adv_update_data(ad, ARRAY_SIZE(ad),
+			      sd, ARRAY_SIZE(sd));
+	}
+}
+
+Note: init_button(button_changed and bt_le_adv_update_data) has to be called before bt_enable and bt_le_adv_start.
+
+6. Build and flash the application on your board.
+
+You should notice that LED1 on your board is blinking now. Indicating that your board is advertising.
+
+7. Open nRF Connect for Mobile on your smartphone.
+
+The connection interval has changed from the previous exercise which was between 100-150 ms associated with the BT_LE_ADV_NCONN macro to around 500ms.
+
+8. Tap on Nordic_Beacon to view the advertising data.
+
+You should notice now that the Manufacturer data is included in the advertising With the company ID of Nordic Semiconductor.
+
+9. Tap on the Manufacturer data to change how the data is displayed and select Unsigned Int16 or Manufacturer data (Bluetooth Core 4.1).
+
+10. Press Button 1 on your board
+
+You should observe that the count increments by one every time the button is pressed. You need to be in scanning mode on your phone to see the change. Press SCAN at the top right corner in nRF Connect for Mobile to see the updated data.
+
+
+By default, the scanning period on nRF Connect for Mobile is set to 45 seconds. You can change the scanning period by going to Settings->Scanner->Scanning Period.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

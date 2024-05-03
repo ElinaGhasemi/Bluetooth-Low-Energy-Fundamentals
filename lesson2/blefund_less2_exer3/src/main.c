@@ -41,7 +41,7 @@ void main(void){
     int blink_status = 0;
     int err;
 
-    LOG_INF("Starting Lesson 3 - Exercise 1 \n");
+    LOG_INF("Starting Lesson 2 - Exercise 3 \n");
 
     err = dk_leds_init();
     if (err)
@@ -59,7 +59,7 @@ void main(void){
     err = bt_id_create (&addr, NULL);
     if (err < 0)
     {
-        printk("Creating new ID failed (err &d)\n", err);
+        printk("Creating new ID failed (err %d)\n", err);
     }
     
 
