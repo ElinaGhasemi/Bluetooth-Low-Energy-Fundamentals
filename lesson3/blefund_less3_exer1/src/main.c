@@ -14,6 +14,9 @@ LOG_MODULE_REGISTER(Lesson3_Exercise1, LOG_LEVEL_INF);
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) -1)
 
 #define RUN_STATUS_LED DK_LED1
+
+/*define an LED to show the connection status */
+#define CONNECTION_STATUS_LED DK_LED2
 #define RUN_LED_BLINK_INTERVAL 1000
 
 struct bt_conn *my_conn = NULL;
