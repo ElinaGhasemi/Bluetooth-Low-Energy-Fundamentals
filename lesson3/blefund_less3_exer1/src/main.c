@@ -50,6 +50,12 @@ void on_connected(struct bt_conn *conn, uint8_t err)
     
 }
 
+void on_disconnected(struct bt_conn *conn, uint8_t reason)
+{
+    LOG_INF("Disconnected. Reason %d", reason);
+    bt_conn_unref(my_conn);
+}
+
 /*Declare the connection_callback structure */
 struct bt_conn_cb connection_callbacks = {
     .connected = on_connected,
