@@ -52,8 +52,6 @@ static void update_phy (struct bt_conn *conn)
     {
         LOG_ERR("bt_conn_le_phy_update() returned %d", err);
     }
-    
-
 }
 
 /*Implement the callback functions */
@@ -102,6 +100,20 @@ void on_le_param_updated(struct bt_conn *conn, uint16_t interval, uint16_t laten
     	LOG_INF("Connection parameters updated: interval %.2f ms, latency %d intervals, timeout %d ms",
 		connection_interval, latency, supervision_timeout);
 
+}
+
+/*Write a callback function to inform about updates in the PHY */
+void on_le_phy_updated (struct bt_conn *conn, struct bt_conn_le_phy_info *param)
+{
+    // PHY Updated
+    if (param->tx_phy == BT_CONN_LE_TX_POWER_PHY_1M){
+        LOG_INF("PHY updated. New PHY: 1M");
+    }else if(param->tx_phy == BT_CONN_LE_TX_POWER_PHY_2M){
+        LOG_INF("PHY updated. New PHY: 2M");
+    }else if (param->tx_phy == BT_CONN_LE_TX_POWER_PHY_CODED_S8)
+    {
+        LOG_INF("PHY updated. New PHY: Long Range");
+    }
 }
 
 /*Declare the connection_callback structure */
