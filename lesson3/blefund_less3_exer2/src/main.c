@@ -38,6 +38,24 @@ static const struct bt_data sd[] = {
 		      BT_UUID_128_ENCODE(0x00001523, 0x1212, 0xefde, 0x1523, 0x785feabcd123)),
 };
 
+//Define the function to update the connection's PHY 
+static void update_phy (struct bt_conn *conn)
+{
+    int err;
+    const struct bt_conn_le_phy_param preferred_phy = {
+        .options = BT_CONN_LE_PHY_OPT_NONE,
+        .pref_rx_phy = BT_GAP_LE_PHY_2M,
+        .pref_tx_phy = BT_GAP_LE_PHY_2M,
+    };
+    err = bt_conn_le_phy_update (conn, &preferred_phy);
+    if (err)
+    {
+        LOG_ERR("bt_conn_le_phy_update() returned %d", err);
+    }
+    
+
+}
+
 /*Implement the callback functions */
 void on_connected(struct bt_conn *conn, uint8_t err)
 {
@@ -63,6 +81,9 @@ void on_connected(struct bt_conn *conn, uint8_t err)
     uint16_t supervision_timeout = info.le.timeout * 10; // in ms
 	LOG_INF("Connection parameters: interval %.2f ms, latency %d intervals, timeout %d ms",
 		connection_interval, info.le.latency, supervision_timeout);
+
+    //Update the PHY mode
+    update_phy(my_conn);
     
 }
 
