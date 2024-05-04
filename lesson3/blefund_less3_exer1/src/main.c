@@ -59,6 +59,7 @@ void on_disconnected(struct bt_conn *conn, uint8_t reason)
 {
     LOG_INF("Disconnected. Reason %d", reason);
     bt_conn_unref(my_conn);
+    dk_set_led(CONNECTION_STATUS_LED, 0);
 }
 
 /*Declare the connection_callback structure */
