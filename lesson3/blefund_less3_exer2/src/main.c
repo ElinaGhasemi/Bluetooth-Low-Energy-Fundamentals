@@ -69,6 +69,18 @@ static void update_data_length(struct bt_conn *conn){
 	
 }
 
+//Define the function to update the connection's MTU */
+static void update_mtu(struct bt_conn *conn)
+{
+	int err;
+	exchange_params.func = exchange_func;
+	err = bt_gatt_exchange_mtu(conn, &exchange_params);
+	if (err)
+	{
+		LOG_ERR("bt_gatt_exchange_mtu failed (err %d)", err);
+	}
+}
+
 /*Implement the callback functions */
 void on_connected(struct bt_conn *conn, uint8_t err)
 {
