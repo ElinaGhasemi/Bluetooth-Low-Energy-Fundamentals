@@ -105,7 +105,7 @@ void main(void){
 
     err = dk_leds_init();
     if (err)
-    {/* code */
+    {
         LOG_ERR("LEDs init failed (err %d)\n", err);
         return;
     }
