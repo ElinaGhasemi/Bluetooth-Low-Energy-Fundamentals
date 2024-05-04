@@ -122,6 +122,8 @@ struct bt_conn_cb connection_callbacks = {
     .disconnected = on_disconnected, 
     //Add the callback for connection parameter updates
     .le_param_updated = on_le_param_updated,
+    //Add the callback for PHY mode updates
+    .le_phy_updated = on_le_phy_updated,
 };
 
 static void button_changed(uint32_t button_state, uint32_t has_changed)
