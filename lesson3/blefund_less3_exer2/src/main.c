@@ -73,6 +73,13 @@ void on_disconnected(struct bt_conn *conn, uint8_t reason)
     dk_set_led(CONNECTION_STATUS_LED, 0);
 }
 
+/*Declare the connection_callback structure */
+struct bt_conn_cb connection_callbacks = {
+    .connected = on_connected,
+    .disconnected = on_disconnected, 
+    //Add the callback for connection parameter updates
+    .le_param_updated = on_le_param_updated,
+};
 
 static void button_changed(uint32_t button_state, uint32_t has_changed)
 {
