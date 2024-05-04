@@ -73,6 +73,16 @@ void on_disconnected(struct bt_conn *conn, uint8_t reason)
     dk_set_led(CONNECTION_STATUS_LED, 0);
 }
 
+//Add the callback for connection parameter updates */
+void on_le_param_updated(struct bt_conn *conn, uint16_t interval, uint16_t latency, uint16_t timeout)
+{
+    double connection_interval = interval * 1.25; //in ms
+    uint16_t supervision_timeout = timeout * 10; // in ms
+    	LOG_INF("Connection parameters updated: interval %.2f ms, latency %d intervals, timeout %d ms",
+		connection_interval, latency, supervision_timeout);
+
+}
+
 /*Declare the connection_callback structure */
 struct bt_conn_cb connection_callbacks = {
     .connected = on_connected,
