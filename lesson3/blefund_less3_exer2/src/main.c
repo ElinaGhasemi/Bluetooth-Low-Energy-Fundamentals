@@ -21,7 +21,7 @@ LOG_MODULE_REGISTER(Lesson3_Exercise2, LOG_LEVEL_INF);
 struct bt_conn *my_conn = NULL;
 
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
-#define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
+#define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)my_conn
 
 #define USER_BUTTON DK_BTN1_MSK
 #define RUN_STATUS_LED DK_LED1
@@ -59,8 +59,14 @@ static void update_data_length(struct bt_conn *conn){
 	int err;
 	struct bt_conn_le_data_len_param my_data_len = {
 		.tx_max_len = BT_GAP_DATA_LEN_MAX,
-		.tx_max_time = BT_GAP_DATA_TIME_MAX
+		.tx_max_time = BT_GAP_DATA_TIME_MAX,
+	};
+	err = bt_conn_le_data_len_update(my_conn, &my_data_len);
+	if (err)
+	{
+		LOG_ERR("data_len_update failed (err %d)", err);
 	}
+	
 }
 
 /*Implement the callback functions */
