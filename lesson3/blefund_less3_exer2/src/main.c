@@ -58,7 +58,11 @@ void on_connected(struct bt_conn *conn, uint8_t err)
         LOG_ERR("bt_conn_get_info() returned %d", err);
         return;
     }
-    
+    // Add the connection parameters to your log
+    double connection_interval = info.le.interval * 1.25; //in ms
+    uint16_t supervision_timeout = info.le.timeout * 10; // in ms
+	LOG_INF("Connection parameters: interval %.2f ms, latency %d intervals, timeout %d ms",
+		connection_interval, info.le.latency, supervision_timeout);
     
 }
 
