@@ -27,7 +27,6 @@ static struct bt_le_adv_param *adv_param =
     800,  /* Min Advertising Interval 500ms (800*0.625ms) */
     801,  /* Max Advertising Interval 500.625ms (801*0.625ms) */
     NULL); /* Set to NULL for undirected advertising */
-struct bt_conn *my_conn = NULL;
 
 /*Declare the advertising packet */
     static const struct bt_data ad[] = {
@@ -74,7 +73,8 @@ void main(void){
     int blink_status = 0;
     int err;
 
-    LOG_INF("Starting Lesson 2 - Exercise 3 \n");
+    LOG_INF("Starting Lesson 3 - Exercise 1 \n");
+//#include <zephyr/bluetooth/gatt.h>
 
     err = dk_leds_init();
     if (err)
