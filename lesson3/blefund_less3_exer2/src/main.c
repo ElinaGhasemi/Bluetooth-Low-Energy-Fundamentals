@@ -54,6 +54,15 @@ static void update_phy (struct bt_conn *conn)
     }
 }
 
+/*Define the function to update the connection's data length */
+static void update_data_length(struct bt_conn *conn){
+	int err;
+	struct bt_conn_le_data_len_param my_data_len = {
+		.tx_max_len = BT_GAP_DATA_LEN_MAX,
+		.tx_max_time = BT_GAP_DATA_TIME_MAX
+	}
+}
+
 /*Implement the callback functions */
 void on_connected(struct bt_conn *conn, uint8_t err)
 {
