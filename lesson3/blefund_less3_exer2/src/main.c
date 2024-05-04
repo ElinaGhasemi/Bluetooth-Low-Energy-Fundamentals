@@ -103,7 +103,7 @@ void on_connected(struct bt_conn *conn, uint8_t err)
     {
         LOG_ERR("bt_conn_get_info() returned %d", err);
         return;
-    }
+    }info
     // Add the connection parameters to your log
     double connection_interval = info.le.interval * 1.25; //in ms
     uint16_t supervision_timeout = info.le.timeout * 10; // in ms
@@ -146,6 +146,17 @@ void on_le_phy_updated (struct bt_conn *conn, struct bt_conn_le_phy_info *param)
     {
         LOG_INF("PHY updated. New PHY: Long Range");
     }
+}
+
+//Write a callback function to inform about updates in data length */
+void on_le_data_len_update(struct bt_conn *conn, struct bt_conn_le_data_len_info *info)
+{
+	uint16_t tx_len = info->tx_max_len;
+	uint16_t tx_time = info->tx_max_time;
+	uint16_t rx_len = info->rx_max_len;
+	uint16_t rx_time = info-> rx_max_time;
+	LOG_INF("Data length updated. Length %d/%d bytes, time %d/%d us", tx_len, rx_len, tx_time,
+		rx_time);
 }
 
 /*Declare the connection_callback structure */
