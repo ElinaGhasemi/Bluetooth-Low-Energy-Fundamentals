@@ -167,7 +167,22 @@ struct bt_conn_cb connection_callbacks = {
     .le_param_updated = on_le_param_updated,
     //Add the callback for PHY mode updates
     .le_phy_updated = on_le_phy_updated,
+	//Add the callback for data length updates
+	.le_data_len_updated = on_le_data_len_update,
 };
+
+//Implement callback function for MTU exchange */
+static void exchange_func (struct bt_conn *conn, uint8_t att_err, struct bt_gatt_exchange_params *params)
+{
+	LOG_INF("MTU exchange %s", att_err == 0 ? "successful" : "failed");
+	if (!att_err)
+	{
+		uint16_t payload_mtu = 
+			bt_gatt_get_mtu(conn) - 3; // 3 bytes used for Attribute headers.
+		LOG_INF("New MTU: %d bytes", payload_mtu);
+	}
+	
+}
 
 static void button_changed(uint32_t button_state, uint32_t has_changed)
 {
