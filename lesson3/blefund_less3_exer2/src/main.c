@@ -23,6 +23,10 @@ struct bt_conn *my_conn = NULL;
 //Create variable that holds callback for MTU negotiation */
 static struct bt_gatt_exchange_params exchange_params;
 
+//forward declaration of exchange_func(): */
+static void exchange_func(struct bt_conn *conn, uint8_t att_err,
+			  struct bt_gatt_exchange_params *params);
+
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)my_conn
 
