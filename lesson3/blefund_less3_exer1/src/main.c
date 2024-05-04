@@ -16,6 +16,7 @@ LOG_MODULE_REGISTER(Lesson3_Exercise1, LOG_LEVEL_INF);
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) -1)
 
+#define USER_BUTTON DK_BTN1_MSK
 #define RUN_STATUS_LED DK_LED1
 
 /*define an LED to show the connection status */
@@ -70,6 +71,30 @@ struct bt_conn_cb connection_callbacks = {
     .disconnected = on_disconnected, 
 };
 
+static void button_changed (uint32_t button_state, uint32_t has_changed){
+    int err;
+    if (has_changed & USER_BUTTON)
+    {
+        LOG_INF("Button changed");
+        err = bt_lbs_send_button_state(button_state ? true : false);
+        if (err)
+        {
+            LOG_ERR("Couldn't send notification. err: %d", err);
+        }
+        
+    }
+}
+
+static int init_button(void){
+    int err;
+    err = dk_buttons_init(button_changed);
+    if (err)
+    {
+        LOG_INF("Cannot init buttons (err: %d)", err);
+    }
+    
+}
+
 
 void main(void){
 
@@ -77,25 +102,18 @@ void main(void){
     int err;
 
     LOG_INF("Starting Lesson 3 - Exercise 1 \n");
-//#include <zephyr/bluetooth/gatt.h>
 
     err = dk_leds_init();
     if (err)
-    {
+    {/* code */
         LOG_ERR("LEDs init failed (err %d)\n", err);
         return;
     }
-    //Change the random static address */
-    bt_addr_le_t addr;
-    err = bt_addr_le_from_str ("FF:EE:DD:CC:BB:AA", "random", &addr);
-    if(err){
-        printk("Invalid BT address (err %d)\n", err);
-    }
-
-    err = bt_id_create (&addr, NULL);
-    if (err < 0)
+    err = init_button();
+    if (err)
     {
-        printk("Creating new ID failed (err %d)\n", err);
+        LOG_INF("Button init failed (err %d)", err);
+		return;
     }
     
     //Register our custom callbacks 
