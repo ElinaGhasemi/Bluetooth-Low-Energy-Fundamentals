@@ -20,6 +20,9 @@ static struct bt_le_adv_param *adv_param = BT_LE_ADV_PARAM(
 LOG_MODULE_REGISTER(Lesson3_Exercise2, LOG_LEVEL_INF);
 struct bt_conn *my_conn = NULL;
 
+//Create variable that holds callback for MTU negotiation */
+static struct bt_gatt_exchange_params exchange_params;
+
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)my_conn
 
