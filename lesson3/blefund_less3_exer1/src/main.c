@@ -6,6 +6,9 @@
 #include <zephyr/bluetooth/addr.h>
 #include <zephyr/bluetooth/conn.h>
 
+/*Include the header file for the LED Button Service */
+#include <bluetooth/services/lbs.h>
+
 #include <dk_buttons_and_leds.h>
 
 LOG_MODULE_REGISTER(Lesson3_Exercise1, LOG_LEVEL_INF);
