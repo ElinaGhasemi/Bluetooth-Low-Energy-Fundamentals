@@ -59,7 +59,7 @@ void on_disconnected(struct bt_conn *conn, uint8_t reason)
 /*Declare the connection_callback structure */
 struct bt_conn_cb connection_callbacks = {
     .connected = on_connected,
-    .discoonected = on_disconnected, 
+    .disconnected = on_disconnected, 
 };
 
 
@@ -89,6 +89,8 @@ void main(void){
         printk("Creating new ID failed (err %d)\n", err);
     }
     
+    //Register our custom callbacks 
+    bt_conn_cb_register(&connection_callbacks);
 
     err = bt_enable(NULL);
     if (err)
