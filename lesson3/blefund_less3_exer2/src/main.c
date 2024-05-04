@@ -63,7 +63,7 @@ static void update_data_length(struct bt_conn *conn){
 	struct bt_conn_le_data_len_param my_data_len = {
 		.tx_max_len = BT_GAP_DATA_LEN_MAX,
 		.tx_max_time = BT_GAP_DATA_TIME_MAX,
-	};
+	};Update the data length and MTU */
 	err = bt_conn_le_data_len_update(my_conn, &my_data_len);
 	if (err)
 	{
@@ -112,7 +112,9 @@ void on_connected(struct bt_conn *conn, uint8_t err)
 
     //Update the PHY mode
     update_phy(my_conn);
-    
+	//Update the data length and MTU */
+	update_data_length(my_conn);
+	update_mtu (my_conn); 
 }
 
 void on_disconnected(struct bt_conn *conn, uint8_t reason)
