@@ -50,6 +50,8 @@ void on_connected(struct bt_conn *conn, uint8_t err)
     }
     LOG_INF("Connected");
     my_conn = bt_conn_ref(conn);
+   /*Turn the connection status LED on */
+    dk_set_led(CONNECTION_STATUS_LED, 1);
     
 }
 
