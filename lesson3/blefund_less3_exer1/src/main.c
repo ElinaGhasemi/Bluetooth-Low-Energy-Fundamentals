@@ -2,6 +2,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/gap.h>
+#include <zephyr/bluetooth/gatt.h>
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/bluetooth/addr.h>
 #include <zephyr/bluetooth/conn.h>
@@ -50,6 +51,7 @@ void on_connected(struct bt_conn *conn, uint8_t err)
     if (err)
     {
         LOG_ERR("Connection error %d",err);
+        return;
     }
     LOG_INF("Connected");
     my_conn = bt_conn_ref(conn);
@@ -92,6 +94,7 @@ static int init_button(void){
     {
         LOG_INF("Cannot init buttons (err: %d)", err);
     }
+    return err;
     
 }
 

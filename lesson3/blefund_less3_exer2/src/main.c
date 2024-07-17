@@ -2,6 +2,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/gap.h>
+#include <zephyr/bluetooth/gatt.h>
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/bluetooth/addr.h>
 #include <zephyr/bluetooth/conn.h>
@@ -28,7 +29,7 @@ static void exchange_func(struct bt_conn *conn, uint8_t att_err,
 			  struct bt_gatt_exchange_params *params);
 
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
-#define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)my_conn
+#define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
 #define USER_BUTTON DK_BTN1_MSK
 #define RUN_STATUS_LED DK_LED1
@@ -67,7 +68,7 @@ static void update_data_length(struct bt_conn *conn){
 	struct bt_conn_le_data_len_param my_data_len = {
 		.tx_max_len = BT_GAP_DATA_LEN_MAX,
 		.tx_max_time = BT_GAP_DATA_TIME_MAX,
-	};Update the data length and MTU */
+	};
 	err = bt_conn_le_data_len_update(my_conn, &my_data_len);
 	if (err)
 	{
@@ -107,7 +108,7 @@ void on_connected(struct bt_conn *conn, uint8_t err)
     {
         LOG_ERR("bt_conn_get_info() returned %d", err);
         return;
-    }info
+    }
     // Add the connection parameters to your log
     double connection_interval = info.le.interval * 1.25; //in ms
     uint16_t supervision_timeout = info.le.timeout * 10; // in ms

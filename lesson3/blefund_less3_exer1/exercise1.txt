@@ -1,0 +1,50 @@
+Exercise 1
+
+In this exercise, I will establish a connection between my Nordic board (nrf5340 DK), as a peripheral, and my smartphone (Andriod device), as a central. Then I will set up some callback functions, to be notified when the connection parameters are changed. Then I will add a temporary service to be able to send data through the established connection.
+
+1. Include the header file for handling Bluetooth Low Energy connections.
+
+#include <zephyr/bluetooth/conn.h>
+
+2. Set up callbacks to be triggered when a connection has been established or disconnected.
+
+2.1 Declare a structure called connection_callbacks of type bt_conn_cb.
+
+The structure is utilized for tracking the state of the connection. Currently, we use the connected and disconnected members to monitor when a new connection is established and when a connection is terminated. Refer to the API documentation for a complete list of all possible events.
+
+We will call our callbacks on_connected and on_disconnected.
+
+struct bt_conn_cb connection_callbacks = {
+    .connected              = on_connected,
+    .disconnected           = on_disconnected,
+};
+
+2.2 Define the callback functions on_connected and on_disconnected.
+
+The callbacks must have the same function parameters as described in the Bluetooth API documentation to ensure proper triggering by the Bluetooth libraries.
+
+Start with simple callback functions, which can be expanded later.
+
+void on_connected(struct bt_conn *conn, uint8_t err)
+{
+    if (err) {
+        LOG_ERR("Connection error %d", err);
+        return;
+    }
+    LOG_INF("Connected");
+    my_conn = bt_conn_ref(conn);
+
+    /* STEP 3.2  Turn the connection status LED on */
+}
+
+void on_disconnected(struct bt_conn *conn, uint8_t reason)
+{
+    LOG_INF("Disconnected. Reason %d", reason);
+    bt_conn_unref(my_conn);
+
+    /* STEP 3.3  Turn the connection status LED off */
+}
+
+The my_conn parameter is a bt_conn pointer declared earlier in the main.c file. It will be used to track our connection in the next exercise.
+
+
