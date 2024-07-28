@@ -104,4 +104,5 @@ void main(void)
 		LOG_ERR("Bluetooth init failed (err %d)\n", err);
 		return;
 	}
+    	bt_conn_cb_register(&connection_callbacks);
 }
