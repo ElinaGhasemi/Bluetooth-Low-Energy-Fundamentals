@@ -42,6 +42,28 @@ static void button_changed (uint32_t button_state, uint32_t has_changed)
     {
         uint32_t user_button_state = button_state & USER_BUTTON;
         app_button_state = user_button_state ? true : false;
-    }
-    
+    }    
 }
+static void on_connected(struct bt_conn *conn, uint8_t err)
+{
+	if (err) {
+		printk("Connection failed (err %u)\n", err);
+		return;
+	}
+
+	printk("Connected\n");
+
+	dk_set_led_on(CON_STATUS_LED);
+}
+
+static void on_disconnected(struct bt_conn *conn, uint8_t reason)
+{
+	printk("Disconnected (reason %u)\n", reason);
+
+	dk_set_led_off(CON_STATUS_LED);
+}
+
+struct bt_conn_cb connection_callbacks = {
+	.connected = on_connected,
+	.disconnected = on_disconnected,
+};
