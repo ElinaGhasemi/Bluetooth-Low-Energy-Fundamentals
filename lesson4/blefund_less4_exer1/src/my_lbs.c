@@ -35,6 +35,9 @@ BT_GATT_SERVICE_DEFINE(my_lbs_svc, BT_GATT_PRIMARY_SERVICE(BT_UUID_LBS),
 		       /* Create and add the Button characteristic */
 		       BT_GATT_CHARACTERISTIC(BT_UUID_LBS_BUTTON, BT_GATT_CHRC_READ,
 					      BT_GATT_PERM_READ, read_button, NULL, &button_state),
+		       /* Create and add the LED characteristic. */
+		       BT_GATT_CHARACTERISTIC(BT_UUID_LBS_LED, BT_GATT_CHRC_WRITE,
+					      BT_GATT_PERM_WRITE, NULL, write_led, NULL),					      
 
 /* A function to register application callbacks for the LED and Button characteristics  */
 int my_lbs_init(struct my_lbs_cb *callbacks)
