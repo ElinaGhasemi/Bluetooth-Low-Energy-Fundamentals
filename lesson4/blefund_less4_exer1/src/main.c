@@ -67,3 +67,15 @@ struct bt_conn_cb connection_callbacks = {
 	.connected = on_connected,
 	.disconnected = on_disconnected,
 };
+
+static int init_button(void)
+{
+	int err;
+
+	err = dk_buttons_init(button_changed);
+	if (err) {
+		printk("Cannot init buttons (err: %d)\n", err);
+	}
+
+	return err;
+}
