@@ -13,3 +13,5 @@ static struct bt_le_adv_param *adv_param = BT_LE_ADV_PARAM(
 	800, /* Min Advertising Interval 500ms (800*0.625ms) */
 	801, /* Max Advertising Interval 500.625ms (801*0.625ms) */
 	NULL); /* Set to NULL for undirected advertising */
+
+LOG_MODULE_REGISTER(Lesson4_Exercise1, LOG_LEVEL_INF);
