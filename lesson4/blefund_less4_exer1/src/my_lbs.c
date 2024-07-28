@@ -31,6 +31,7 @@ static struct my_lbs_cb lbs_cb;
 
 /* LED Button Service Declaration */
 /* Create and add the MY LBS service to the Bluetooth LE stack */
+BT_GATT_SERVICE_DEFINE(my_lbs_svc, BT_GATT_PRIMARY_SERVICE(BT_UUID_LBS),
 
 /* A function to register application callbacks for the LED and Button characteristics  */
 int my_lbs_init(struct my_lbs_cb *callbacks)
