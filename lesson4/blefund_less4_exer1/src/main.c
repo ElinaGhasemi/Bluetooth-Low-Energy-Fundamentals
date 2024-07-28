@@ -104,5 +104,19 @@ void main(void)
 		LOG_ERR("Bluetooth init failed (err %d)\n", err);
 		return;
 	}
-    	bt_conn_cb_register(&connection_callbacks);
+    bt_conn_cb_register(&connection_callbacks);
+    
+ 	LOG_INF("Bluetooth initialized\n");
+	err = bt_le_adv_start(adv_param, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
+	if (err) {
+		LOG_ERR("Advertising failed to start (err %d)\n", err);
+		return;
+	}
+
+	LOG_INF("Advertising successfully started\n");
+
+	for (;;) {
+		dk_set_led(RUN_STATUS_LED, (++blink_status) % 2);
+		k_sleep(K_MSEC(RUN_LED_BLINK_INTERVAL));
+	}       
 }
