@@ -27,6 +27,9 @@ LOG_MODULE_REGISTER(Lesson4_Exercise1, LOG_LEVEL_INF);
 /*Specify the LED to control */
 #define USER_LED DK_LED3
 
+/* Specify the button to monitor */
+#define USER_BUTTON DK_BTN1_MSK
+
 #define RUN_LED_BLINK_INTERVAL 1000
 
 static bool app_button_state;
