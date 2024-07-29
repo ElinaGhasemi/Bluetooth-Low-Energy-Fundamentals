@@ -41,6 +41,12 @@ static const struct bt_data sd[] = {
 	BT_DATA_BYTES(BT_DATA_UUID128_ALL, BT_UUID_LBS_VAL),
 };
 
+/*Define the application callback function for controlling the LED */
+static void app_led_cb (bool led_state)
+{
+    dk_set_led(USER_LED, led_state);
+}
+
 static void button_changed (uint32_t button_state, uint32_t has_changed)
 {
     if (has_changed & USER_BUTTON)
