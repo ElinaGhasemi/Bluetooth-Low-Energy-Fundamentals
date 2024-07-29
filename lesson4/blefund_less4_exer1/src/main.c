@@ -50,6 +50,12 @@ static void app_led_cb (bool led_state)
     dk_set_led(USER_LED, led_state);
 }
 
+/* Define the application callback function for reading the state of the button */
+static bool app_button_cb(void)
+{
+    return app_button_state;
+}
+
 static void button_changed (uint32_t button_state, uint32_t has_changed)
 {
     if (has_changed & USER_BUTTON)
