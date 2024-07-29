@@ -6,6 +6,8 @@
 #include <zephyr/bluetooth/conn.h>
 
 #include <dk_buttons_and_leds.h>
+//Include the header file of MY LBS customer service
+#include "my_lbs.h"
 
 static struct bt_le_adv_param *adv_param = BT_LE_ADV_PARAM(
 	(BT_LE_ADV_OPT_CONNECTABLE |
@@ -105,7 +107,7 @@ void main(void)
 		return;
 	}
     bt_conn_cb_register(&connection_callbacks);
-    
+
  	LOG_INF("Bluetooth initialized\n");
 	err = bt_le_adv_start(adv_param, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
 	if (err) {
