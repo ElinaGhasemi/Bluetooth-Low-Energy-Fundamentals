@@ -6,6 +6,7 @@ project(NONE)
 # NORDIC SDK APP START
 target_sources(app PRIVATE
   src/main.c
+  src/my_lbs.c
 )
 
 # NORDIC SDK APP END
