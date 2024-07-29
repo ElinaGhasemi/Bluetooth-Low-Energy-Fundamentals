@@ -24,6 +24,9 @@ LOG_MODULE_REGISTER(Lesson4_Exercise1, LOG_LEVEL_INF);
 #define RUN_STATUS_LED DK_LED1
 #define CON_STATUS_LED DK_LED2
 
+/*Specify the LED to control */
+#define USER_LED DK_LED3
+
 #define RUN_LED_BLINK_INTERVAL 1000
 
 static bool app_button_state;
