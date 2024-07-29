@@ -56,6 +56,12 @@ static bool app_button_cb(void)
     return app_button_state;
 }
 
+/*Declare a varaible app_callbacks of type my_lbs_cb and initiate its members to the applications call back functions we developed. */
+static struct my_lbs_cb app_callbacks = {
+    .led_cb = app_led_cb,
+    .button_cb = app_button_cb,
+};
+
 static void button_changed (uint32_t button_state, uint32_t has_changed)
 {
     if (has_changed & USER_BUTTON)
