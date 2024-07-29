@@ -131,6 +131,14 @@ void main(void)
 		return;
 	}
     bt_conn_cb_register(&connection_callbacks);
+    /* Pass your application callback functions stored in app_callbacks to the MY LBS service */
+    err = my_lbs_init (&app_callbacks);
+    if (err)
+    {
+        printk("Failed to init LBS (err:%d)\n", err);
+		return;
+    }
+    
 
  	LOG_INF("Bluetooth initialized\n");
 	err = bt_le_adv_start(adv_param, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
