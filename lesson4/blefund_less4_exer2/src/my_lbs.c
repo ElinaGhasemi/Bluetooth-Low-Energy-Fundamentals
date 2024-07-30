@@ -81,6 +81,8 @@ BT_GATT_SERVICE_DEFINE(my_lbs_svc, BT_GATT_PRIMARY_SERVICE(BT_UUID_LBS),
 		       /* Create and add the Button characteristic */
 		       BT_GATT_CHARACTERISTIC(BT_UUID_LBS_BUTTON, BT_GATT_CHRC_READ | BT_GATT_CHRC_INDICATE,
 					      BT_GATT_PERM_READ, read_button, NULL, &button_state),
+				/* Create and add the Client Characteristic Configuration Descriptor */
+				BT_GATT_CCC(mylbsbc_ccc_cfg_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 		       /* Create and add the LED characteristic. */
 		       BT_GATT_CHARACTERISTIC(BT_UUID_LBS_LED, BT_GATT_CHRC_WRITE,
 					      BT_GATT_PERM_WRITE, NULL, write_led, NULL),		
