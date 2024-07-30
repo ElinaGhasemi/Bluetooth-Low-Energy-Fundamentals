@@ -25,6 +25,9 @@ static bool button_state;
 static struct my_lbs_cb lbs_cb;
 
 /* Define an indication parameter */
+static struct bt_gatt_indicate_params ind_params;
+
+/* Implement the configuration change callback function */
 static void mylbsbc_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value)
 {
 	indicate_enabled = (value == BT_GATT_CCC_INDICATE);
