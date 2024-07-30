@@ -33,6 +33,12 @@ static void mylbsbc_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t va
 	indicate_enabled = (value == BT_GATT_CCC_INDICATE);
 }
 
+// This function is called when a remote device has acknowledged the indication at its host layer
+static void indicate_cb (struct bt_conn *conn, struct bt_gatt_indicate_params *params, uint8_t err)
+{
+	LOG_DBG("Indication %s\n", err != 0U ? "fail" : "success");
+}
+
 /* Implement the write callback function of the LED characteristic */
 static ssize_t write_led(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf,
 			 uint16_t len, uint16_t offset, uint8_t flags)
@@ -107,4 +113,19 @@ int my_lbs_init(struct my_lbs_cb *callbacks)
 	}
 
 	return 0;
+}
+
+/* Define the function to send indications */
+int my_lbs_send_button_state_indicate(bool button_state)
+{
+	if (!indicate_enabled)
+	{
+		return -EACCES;
+	}
+	ind_params.attr = &my_lbs_svc.attrs[2];
+	ind_params.func = indicate_cb; // A remote device has ACKed at its host layer (ATT ACK)
+	ind_params.destroy = NULL;
+	ind_params.data = &button_state;
+	ind_params.len = sizeof(button_state);
+	return bt_gatt_indicate(NULL, &ind_params);	
 }
