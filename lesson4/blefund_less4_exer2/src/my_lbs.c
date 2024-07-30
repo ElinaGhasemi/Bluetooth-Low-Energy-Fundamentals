@@ -9,7 +9,7 @@
 #include <zephyr/sys/printk.h>
 #include <zephyr/sys/byteorder.h>
 #include <zephyr/kernel.h>
-
+#include <zephyr/logging/log.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/hci.h>
 #include <zephyr/bluetooth/conn.h>
@@ -18,9 +18,7 @@
 
 #include "my_lbs.h"
 
-#include <zephyr/logging/log.h>
-
-LOG_MODULE_DECLARE(Lesson4_Exercise1);
+LOG_MODULE_DECLARE(Lesson4_Exercise2);
 
 static bool button_state;
 static struct my_lbs_cb lbs_cb;

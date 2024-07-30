@@ -16,7 +16,7 @@ static struct bt_le_adv_param *adv_param = BT_LE_ADV_PARAM(
 	801, /* Max Advertising Interval 500.625ms (801*0.625ms) */
 	NULL); /* Set to NULL for undirected advertising */
 
-LOG_MODULE_REGISTER(Lesson4_Exercise1, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(Lesson4_Exercise2, LOG_LEVEL_INF);
 
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
@@ -111,7 +111,7 @@ void main(void)
 	int blink_status = 0;
 	int err;
 
-	LOG_INF("Starting Lesson 4 - Exercise 1 \n");
+	LOG_INF("Starting Lesson 4 - Exercise 2 \n");
 
 	err = dk_leds_init();
 	if (err) {
