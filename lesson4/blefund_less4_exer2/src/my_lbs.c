@@ -47,7 +47,7 @@ static void indicate_cb (struct bt_conn *conn, struct bt_gatt_indicate_params *p
 }
 
 /* Implement the write callback function of the LED characteristic */
-static ssize_t write_led(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf,
+static ssize_t write_led(struct bt_conn *conn, const struct bt_gatt_attr *attr, const void *buf,
 			 uint16_t len, uint16_t offset, uint8_t flags)
 {
 	LOG_DBG("Attribute write, handle: %u, conn: %p", attr->handle, (void *)conn);	
