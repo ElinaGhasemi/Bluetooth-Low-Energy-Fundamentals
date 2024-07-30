@@ -21,6 +21,7 @@
 LOG_MODULE_DECLARE(Lesson4_Exercise2);
 
 static bool indicate_enabled;
+static bool notify_mysensor_enabled;
 static bool button_state;
 static struct my_lbs_cb lbs_cb;
 
@@ -31,6 +32,12 @@ static struct bt_gatt_indicate_params ind_params;
 static void mylbsbc_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value)
 {
 	indicate_enabled = (value == BT_GATT_CCC_INDICATE);
+}
+
+/* Define the configuration change callback function for the MYSENSOR characteristic */
+static void mylbsbc_ccc_mysensor_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value)
+{
+	notify_mysensor_enabled = (value == BT_GATT_CCC_NOTIFY);
 }
 
 // This function is called when a remote device has acknowledged the indication at its host layer
