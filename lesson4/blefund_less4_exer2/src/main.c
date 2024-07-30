@@ -31,6 +31,8 @@ LOG_MODULE_REGISTER(Lesson4_Exercise2, LOG_LEVEL_INF);
 #define USER_BUTTON DK_BTN1_MSK
 
 #define RUN_LED_BLINK_INTERVAL 1000
+/* - Define the interval at which you want to send data at */
+#define NOTIFY_INTERVAL 500
 
 static bool app_button_state;
 /* Define the data you want to stream over Bluetooth LE */
@@ -67,6 +69,20 @@ static void app_led_cb (bool led_state)
 static bool app_button_cb(void)
 {
     return app_button_state;
+}
+
+/*  Define the thread function  */
+void send_data_thread(void)
+{
+	while (1)
+	{
+		/* Simulate data */
+		simulate_data();
+		/* Send notification, the function sends notifications only if a client is subscribed */		
+		my_lbs_send_sensor_notify(app_sensor_value);
+		k_sleep(K_MSEC(NOTIFY_INTERVAL));
+
+	}
 }
 
 /*Declare a varaible app_callbacks of type my_lbs_cb and initiate its members to the applications call back functions we developed. */
@@ -169,3 +185,5 @@ void main(void)
 		k_sleep(K_MSEC(RUN_LED_BLINK_INTERVAL));
 	}       
 }
+
+K_THREAD_DEFINE(NOTIFY_INTERVAL, STACKSIZE, send_data_thread, NULL, NULL, NULL, PRIORITY, 0 , 0);
