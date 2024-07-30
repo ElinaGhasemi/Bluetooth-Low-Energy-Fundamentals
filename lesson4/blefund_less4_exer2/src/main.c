@@ -33,6 +33,8 @@ LOG_MODULE_REGISTER(Lesson4_Exercise2, LOG_LEVEL_INF);
 #define RUN_LED_BLINK_INTERVAL 1000
 
 static bool app_button_state;
+/* Define the data you want to stream over Bluetooth LE */
+static uint32_t app_sensor_value = 100;
 
 static const struct bt_data ad[] = {
 	BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
@@ -43,6 +45,17 @@ static const struct bt_data ad[] = {
 static const struct bt_data sd[] = {
 	BT_DATA_BYTES(BT_DATA_UUID128_ALL, BT_UUID_LBS_VAL),
 };
+
+/* Define a function to simulate the data */
+static void simulate_data(void)
+{
+	app_sensor_value++;
+	if (app_sensor_value == 200)
+	{
+		app_sensor_value = 100;
+	}
+	
+}
 
 /*Define the application callback function for controlling the LED */
 static void app_led_cb (bool led_state)
