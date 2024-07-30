@@ -102,6 +102,11 @@ BT_GATT_SERVICE_DEFINE(my_lbs_svc, BT_GATT_PRIMARY_SERVICE(BT_UUID_LBS),
 		       /* Create and add the LED characteristic. */
 		       BT_GATT_CHARACTERISTIC(BT_UUID_LBS_LED, BT_GATT_CHRC_WRITE,
 					      BT_GATT_PERM_WRITE, NULL, write_led, NULL),		
+	/* Create and add the MYSENSOR characteristic and its CCCD  */
+	BT_GATT_CHARACTERISTIC(BT_UUID_LBS_MYSENSOR, BT_GATT_CHRC_NOTIFY, BT_GATT_PERM_NONE, NULL,
+			       NULL, NULL),
+
+	BT_GATT_CCC(mylbsbc_ccc_mysensor_cfg_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),						  
 );					 			      
 
 /* A function to register application callbacks for the LED and Button characteristics  */
