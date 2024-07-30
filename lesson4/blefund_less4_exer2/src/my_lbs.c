@@ -79,7 +79,7 @@ static ssize_t read_button(struct bt_conn *conn, const struct bt_gatt_attr *attr
 /* Create and add the MY LBS service to the Bluetooth LE stack */
 BT_GATT_SERVICE_DEFINE(my_lbs_svc, BT_GATT_PRIMARY_SERVICE(BT_UUID_LBS),
 		       /* Create and add the Button characteristic */
-		       BT_GATT_CHARACTERISTIC(BT_UUID_LBS_BUTTON, BT_GATT_CHRC_READ,
+		       BT_GATT_CHARACTERISTIC(BT_UUID_LBS_BUTTON, BT_GATT_CHRC_READ | BT_GATT_CHRC_INDICATE,
 					      BT_GATT_PERM_READ, read_button, NULL, &button_state),
 		       /* Create and add the LED characteristic. */
 		       BT_GATT_CHARACTERISTIC(BT_UUID_LBS_LED, BT_GATT_CHRC_WRITE,
