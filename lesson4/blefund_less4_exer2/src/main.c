@@ -30,8 +30,11 @@ LOG_MODULE_REGISTER(Lesson4_Exercise2, LOG_LEVEL_INF);
 /* Specify the button to monitor */
 #define USER_BUTTON DK_BTN1_MSK
 
+#define STACKSIZE 1024
+#define PRIORITY 7
+
 #define RUN_LED_BLINK_INTERVAL 1000
-/* - Define the interval at which you want to send data at */
+/* Define the interval at which you want to send data at */
 #define NOTIFY_INTERVAL 500
 
 static bool app_button_state;
@@ -185,5 +188,5 @@ void main(void)
 		k_sleep(K_MSEC(RUN_LED_BLINK_INTERVAL));
 	}       
 }
-
-K_THREAD_DEFINE(NOTIFY_INTERVAL, STACKSIZE, send_data_thread, NULL, NULL, NULL, PRIORITY, 0 , 0);
+/* Define and initialize a thread to send data periodically */
+K_THREAD_DEFINE(send_data_thread_id, STACKSIZE, send_data_thread, NULL, NULL, NULL, PRIORITY, 0 , 0);
