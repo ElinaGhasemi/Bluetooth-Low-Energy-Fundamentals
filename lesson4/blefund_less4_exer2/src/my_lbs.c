@@ -20,8 +20,15 @@
 
 LOG_MODULE_DECLARE(Lesson4_Exercise2);
 
+static bool indicate_enabled;
 static bool button_state;
 static struct my_lbs_cb lbs_cb;
+
+/* Define an indication parameter */
+static void mylbsbc_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value)
+{
+	indicate_enabled = (value == BT_GATT_CCC_INDICATE);
+}
 
 /* Implement the write callback function of the LED characteristic */
 static ssize_t write_led(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf,
