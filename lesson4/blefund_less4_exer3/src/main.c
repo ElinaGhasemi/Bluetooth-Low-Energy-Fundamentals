@@ -467,7 +467,12 @@ static void bt_receive_cb(struct bt_conn *conn, const uint8_t *const data, uint1
 			tx->data[tx->len] = '\n';
 			tx->len++;
 		}
-		/* STEP 8.3 - Forward the data received over Bluetooth LE to the UART peripheral */
+		/* Forward the data received over Bluetooth LE to the UART peripheral */
+		err = uart_tx(uart, tx->data, tx->len, SYS_FOREVER_MS);
+		if (err)
+		{
+			k_fifo_put(&fifo_uart_tx_data, tx);		
+		}		
 	}
 }
 /* Create a variable of type bt_nus_cb and initialize it */
