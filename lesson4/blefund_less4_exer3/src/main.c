@@ -53,7 +53,9 @@ static struct k_work_delayable uart_work;
 
 /* STEP 6.2 - Declare the struct of the data item of the FIFOs */
 
-/* STEP 6.1 - Declare the FIFOs */
+/* Declare the FIFOs */
+static K_FIFO_DEFINE(fifo_uart_tx_data);
+static K_FIFO_DEFINE(fifo_uart_rx_data);
 
 static const struct bt_data ad[] = {
 	BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
