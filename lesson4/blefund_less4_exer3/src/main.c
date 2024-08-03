@@ -597,6 +597,8 @@ void main(void)
 		k_sleep(K_MSEC(RUN_LED_BLINK_INTERVAL));
 	}
 }
-/* STEP 9.3 - Define the thread function  */
+/* Define the thread function  */
 
-/* STEP 9.2 - Create a dedicated thread for sending the data over Bluetooth LE. */
+
+/* Create a dedicated thread for sending the data over Bluetooth LE. */
+K_THREAD_DEFINE(ble_write_thread_id, STACKSIZE, ble_write_thread, NULL, NULL, NULL, PRIORITY, 0, 0);
