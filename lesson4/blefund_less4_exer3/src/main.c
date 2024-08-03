@@ -536,8 +536,13 @@ void main(void)
 	int err = 0;
 
 	configure_gpio();
-	/* STEP 7 - Initialize the UART Peripheral  */
-
+	/* Initialize the UART Peripheral  */
+	err = uart_init();
+	if (err)
+	{
+		error();
+	}
+	
 	if (IS_ENABLED(CONFIG_BT_NUS_SECURITY_ENABLED)) {
 		err = bt_conn_auth_cb_register(&conn_auth_callbacks);
 		if (err) {
