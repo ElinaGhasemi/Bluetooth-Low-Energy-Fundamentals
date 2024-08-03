@@ -598,7 +598,20 @@ void main(void)
 	}
 }
 /* Define the thread function  */
+void ble_write_thread(void)
+{
+	/* Don't go any further until BLE is initialized */
+	k_sem_take(&ble_init_ok, K_FOREVER);
+	for (;;) {
+		/* Wait indefinitely for data from the UART peripheral */
+		struct uart_data_t *buf = k_fifo_get(&fifo_uart_rx_data, K_FOREVER);
+		/* Send data over Bluetooth LE to remote device(s) */
+		if (bt_nus_send(NULL, buf->data, buf->len)) {
+			LOG_WRN("Failed to send data over BLE connection");
+		}
 
-
+		k_free(buf);
+	}	
+}
 /* Create a dedicated thread for sending the data over Bluetooth LE. */
 K_THREAD_DEFINE(ble_write_thread_id, STACKSIZE, ble_write_thread, NULL, NULL, NULL, PRIORITY, 0, 0);
