@@ -168,7 +168,8 @@ static void uart_cb(const struct device *dev, struct uart_event *evt, void *user
 				   data[0]);
 
 		if (buf->len > 0) {
-			/* STEP 9.1 -  Push the data received from the UART peripheral into the fifo_uart_rx_data FIFO */
+			/* Push the data received from the UART peripheral into the fifo_uart_rx_data FIFO */
+			k_fifo_put(&fifo_uart_rx_data, buf);
 
 		} else {
 			k_free(buf);
