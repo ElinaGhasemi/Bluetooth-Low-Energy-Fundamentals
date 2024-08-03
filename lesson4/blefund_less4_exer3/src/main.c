@@ -470,7 +470,10 @@ static void bt_receive_cb(struct bt_conn *conn, const uint8_t *const data, uint1
 		/* STEP 8.3 - Forward the data received over Bluetooth LE to the UART peripheral */
 	}
 }
-/* STEP 8.1 - Create a variable of type bt_nus_cb and initialize it */
+/* Create a variable of type bt_nus_cb and initialize it */
+static struct bt_nus_cb nus_cb = {
+	.received = bt_receive_cb,
+};
 
 void error(void)
 {
