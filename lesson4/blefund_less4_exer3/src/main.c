@@ -51,7 +51,12 @@ static struct bt_conn *auth_conn;
 static const struct device *uart = DEVICE_DT_GET(DT_CHOSEN(nordic_nus_uart));
 static struct k_work_delayable uart_work;
 
-/* STEP 6.2 - Declare the struct of the data item of the FIFOs */
+/* Declare the struct of the data item of the FIFOs */
+struct uart_data_t{
+	void *fifo_resereved;
+	uint8_t data[CONFIG_BT_NUS_UART_BUFFER_SIZE];
+	uint16_t len;
+};
 
 /* Declare the FIFOs */
 static K_FIFO_DEFINE(fifo_uart_tx_data);
