@@ -572,7 +572,13 @@ void main(void)
 	if (IS_ENABLED(CONFIG_SETTINGS)) {
 		settings_load();
 	}
-	/* STEP 8.2 - Pass your application callback function to the NUS service */
+	/* Pass your application callback function to the NUS service */
+	err = bt_nus_init(&nus_cb);
+	if (err)
+	{
+		LOG_ERR("Failed to initialize UART service (err: %d)", err);
+		return;	}
+	
 
 	err = bt_le_adv_start(BT_LE_ADV_CONN, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
 	if (err) {
