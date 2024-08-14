@@ -54,6 +54,8 @@ static void on_disconnected(struct bt_conn *conn, uint8_t reason)
 struct bt_conn_cb connection_callbacks = {
 	.connected = on_connected,
 	.disconnected = on_disconnected,
+    /* Add the security_changed member to the callback structure */
+    .security_changed = on_security_changed,
 
 };
 
