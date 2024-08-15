@@ -133,7 +133,20 @@ static void button_changed(uint32_t button_state, uint32_t has_changed)
 		bt_lbs_send_button_state(user_button_state);
 		app_button_state = user_button_state ? true : false;
 	}
-	/* STEP 2.2 - Add extra button handling to remove bond information */
+	/* Add extra button handling to remove bond information */
+	if (has_changed & BOND_DELETE_BUTTON){
+		uint32_t bond_delete_button_state = button_state & BOND_DELETE_BUTTON;
+		if (bond_delete_button_state == 0){
+			int err = bt_unpair(BT_ID_DEFAULT, BT_ADDR_ANY);
+			if (err) {
+				LOG_INF("Cannot delete bond (err: %d)\n", err);
+			} else {
+				LOG_INF("Bond deleted succesfully");
+			}
+		}
+		
+	}
+	
 
 	/* STEP 4.2.2 Add extra button handling to advertise without using Accept List */
 }
