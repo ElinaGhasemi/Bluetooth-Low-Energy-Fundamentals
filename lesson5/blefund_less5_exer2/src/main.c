@@ -8,7 +8,8 @@
 
 #include "lbs.h"
 
-/* STEP 1.2 - Add the header file for the Settings module */
+/* Add the header file for the Settings module */
+#include <zephyr/settings/settings.h>
 
 LOG_MODULE_REGISTER(Lesson5_Exercise2, LOG_LEVEL_INF);
 
