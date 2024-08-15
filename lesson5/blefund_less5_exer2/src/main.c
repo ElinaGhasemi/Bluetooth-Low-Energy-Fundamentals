@@ -24,7 +24,8 @@ LOG_MODULE_REGISTER(Lesson5_Exercise2, LOG_LEVEL_INF);
 
 #define USER_BUTTON DK_BTN1_MSK
 
-/* STEP 2.1 - Add extra button for bond deleting function */
+/* Add extra button for bond deleting function */
+#define BOND_DELETE_BUTTON             DK_BTN2_MSK
 
 /* STEP 4.2.1 - Add extra button for enablig pairing mode */
 
