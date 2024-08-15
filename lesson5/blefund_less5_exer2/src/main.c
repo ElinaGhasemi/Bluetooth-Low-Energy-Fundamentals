@@ -70,7 +70,19 @@ static void setup_accept_list_cb(const struct bt_bond_info *info, void *user_dat
 	}	
 }
 
-/* STEP 3.3.2 - Define the function to loop through the bond list */
+/* Define the function to loop through the bond list */
+static int setup_accept_list(uint8_t local_id)
+{
+	int err = bt_le_filter_accept_list_clear();
+	if (err) {
+		LOG_INF("Cannot clear accept list (err: %d)\n", err);
+		return err;
+	}
+	int bond_cnt = 0;
+
+	bt_foreach_bond(local_id, setup_accept_list_cb, &bond_cnt);
+	return bond_cnt;
+}
 
 /* STEP 3.4.1 - Define the function to advertise with the Accept List */
 
