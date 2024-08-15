@@ -29,8 +29,10 @@ LOG_MODULE_REGISTER(Lesson5_Exercise2, LOG_LEVEL_INF);
 
 /* STEP 4.2.1 - Add extra button for enablig pairing mode */
 
-/* STEP 3.2.1 - Define advertising parameter for no Accept List */
-
+/* Define advertising parameter for no Accept List */
+#define BT_LE_ADV_CONN_NO_ACCEPT_LIST                                                              \
+	BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_ONE_TIME,                        \
+			BT_GAP_ADV_FAST_INT_MIN_2, BT_GAP_ADV_FAST_INT_MAX_2, NULL)
 /* STEP 3.2.2 - Define advertising parameter for when Accept List is used */
 
 static bool app_button_state;
