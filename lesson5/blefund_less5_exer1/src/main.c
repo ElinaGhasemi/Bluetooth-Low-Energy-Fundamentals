@@ -151,6 +151,14 @@ void main(void)
 		LOG_INF("Button init failed (err %d)\n", err);
 		return;
 	}
+
+    /* Register the authentication callbacks */
+    err = bt_conn_auth_cb_register(&conn_auth_callbacks);
+	if (err) {
+		LOG_INF("Failed to register authorization callbacks\n");
+		return;
+	}
+
 	bt_conn_cb_register(&connection_callbacks);
 
 	err = bt_enable(NULL);
