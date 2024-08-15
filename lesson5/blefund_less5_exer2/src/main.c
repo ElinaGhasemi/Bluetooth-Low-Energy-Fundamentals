@@ -50,7 +50,25 @@ static const struct bt_data sd[] = {
 	BT_DATA_BYTES(BT_DATA_UUID128_ALL, BT_UUID_LBS_VAL),
 };
 
-/* STEP 3.3.1 - Define the callback to add addreses to the Accept List */
+/* Define the callback to add addreses to the Accept List */
+static void setup_accept_list_cb(const struct bt_bond_info *info, void *user_data)
+{
+	int *bond_cnt = user_data;
+	if ((*bond_cnt) < 0)
+	{
+		return;
+	}
+	int err = bt_le_filter_accept_list_add(&info->addr);
+	LOG_INF("Added following peer to accept list: %x %x\n", info->addr.a.val[0],
+		info->addr.a.val[1]);
+	if (err)
+	{
+		LOG_INF("Cannot add peer to filter accept list (err: %d)\n", err);
+		(*bond_cnt) = -EIO;
+	}else {
+		(*bond_cnt)++;
+	}	
+}
 
 /* STEP 3.3.2 - Define the function to loop through the bond list */
 
