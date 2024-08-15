@@ -71,6 +71,15 @@ struct bt_conn_cb connection_callbacks = {
 
 };
 
+/* Define the callback function auth_passkey_display */
+static void auth_passkey_display(struct bt_conn *conn, unsigned int passkey)
+{
+    char addr[BT_ADDR_LE_STR_LEN];
+	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+
+	LOG_INF("Passkey for %s: %06u\n", addr, passkey);  
+}
+
 static void app_led_cb(bool led_state)
 {
 	dk_set_led(USER_LED, led_state);
