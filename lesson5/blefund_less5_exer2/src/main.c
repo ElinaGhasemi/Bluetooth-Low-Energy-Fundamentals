@@ -182,7 +182,8 @@ void main(void)
 
 	LOG_INF("Bluetooth initialized\n");
 
-	/* STEP 1.3 - Add setting load function */
+	/* Add setting load function */
+	settings_load();
 
 	err = bt_lbs_init(&lbs_callbacs);
 	if (err) {
