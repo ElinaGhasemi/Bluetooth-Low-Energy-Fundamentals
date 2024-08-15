@@ -90,6 +90,12 @@ static void auth_cancel(struct bt_conn *conn)
 	LOG_INF("Pairing cancelled: %s\n", addr);
 }
 
+/* Declare the authenticated pairing callback structure */
+static struct bt_conn_auth_cb conn_auth_callbacks = {
+    .passkey_display = auth_passkey_display,
+    .cancel = auth_cancel,
+};
+
 static void app_led_cb(bool led_state)
 {
 	dk_set_led(USER_LED, led_state);
