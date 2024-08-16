@@ -269,14 +269,14 @@ void main(void)
 	/* Start advertising with the Accept List */
 	k_work_submit(&advertise_acceptlist_work);
 
-	/* STEP 3.4.3 - Remove the original code that does normal advertising */
-	err = bt_le_adv_start(BT_LE_ADV_CONN, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
-	if (err) {
-		LOG_INF("Advertising failed to start (err %d)\n", err);
-		return;
-	}
+	/* Remove the original code that does normal advertising */
+	//err = bt_le_adv_start(BT_LE_ADV_CONN, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
+	//if (err) {
+		//LOG_INF("Advertising failed to start (err %d)\n", err);
+		//return;
+	//}
 
-	LOG_INF("Advertising successfully started\n");
+	//LOG_INF("Advertising successfully started\n");
 
 	for (;;) {
 		dk_set_led(RUN_STATUS_LED, (++blink_status) % 2);
