@@ -212,7 +212,31 @@ static void button_changed(uint32_t button_state, uint32_t has_changed)
 		
 	}
 	
-	/* STEP 4.2.2 Add extra button handling to advertise without using Accept List */
+	/* Add extra button handling to advertise without using Accept List */
+	if (has_changed & PAIRING_BUTTON) {
+		uint32_t pairing_button_state = button_state & PAIRING_BUTTON;
+		if (pairing_button_state == 0) {
+			int err_code = bt_le_adv_stop();
+			if (err_code) {
+				LOG_INF("Cannot stop advertising err= %d \n", err_code);
+				return;
+			}
+			err_code = bt_le_filter_accept_list_clear();
+			if (err_code) {
+				LOG_INF("Cannot clear accept list (err: %d)\n", err_code);
+			} else {
+				LOG_INF("Accept list cleared succesfully");
+			}
+			err_code = bt_le_adv_start(BT_LE_ADV_CONN_NO_ACCEPT_LIST, ad,
+						   ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
+
+			if (err_code) {
+				LOG_INF("Cannot start open advertising (err: %d)\n", err_code);
+			} else {
+				LOG_INF("Advertising in pairing mode started");
+			}
+		}
+	}
 }
 
 static int init_button(void)
