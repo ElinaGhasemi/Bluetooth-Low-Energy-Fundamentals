@@ -129,7 +129,8 @@ static void on_disconnected(struct bt_conn *conn, uint8_t reason)
 {
 	LOG_INF("Disconnected (reason %u)\n", reason);
 	dk_set_led_off(CON_STATUS_LED);
-	/* STEP 3.5 - Start advertising with Accept List */
+	/* Start advertising with Accept List */
+	k_work_submit(&advertise_acceptlist_work);
 }
 
 static void on_security_changed(struct bt_conn *conn, bt_security_t level, enum bt_security_err err)
