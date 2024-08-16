@@ -84,7 +84,34 @@ static int setup_accept_list(uint8_t local_id)
 	return bond_cnt;
 }
 
-/* STEP 3.4.1 - Define the function to advertise with the Accept List */
+/* Define the function to advertise with the Accept List */
+void advertise_with_acceptlist(struct k_work *work)
+{
+	int err = 0;
+	int allowed_cnt = setup_accept_list(BT_ID_DEFAULT);
+	if (allowed_cnt < 0)
+	{
+		LOG_INF("Acceptlist setup failed (err:%d)\n", allowed_cnt);
+	} else {
+		if (allowed_cnt == 0)
+		{
+			LOG_INF("Advertising with no Accept list \n");
+			err = bt_le_adv_start(BT_LE_ADV_CONN_NO_ACCEPT_LIST, ad, ARRAY_SIZE(ad), sd,
+					      ARRAY_SIZE(sd));			
+		} else {
+			LOG_INF("Acceptlist setup number  = %d \n", allowed_cnt);
+			err = bt_le_adv_start(BT_LE_ADV_CONN_ACCEPT_LIST, ad, ARRAY_SIZE(ad), sd,
+					      ARRAY_SIZE(sd));
+		}
+		if (err) {
+			LOG_INF("Advertising failed to start (err %d)\n", err);
+			return;
+		}
+		LOG_INF("Advertising successfully started\n");		
+	}
+}
+
+K_WORK_DEFINE(advertise_acceptlist_work, advertise_with_acceptlist);
 
 static void on_connected(struct bt_conn *conn, uint8_t err)
 {
