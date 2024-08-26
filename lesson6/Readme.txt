@@ -33,3 +33,11 @@ sudo apt install p7zip-full
 
 ### For Installing Wireshark
 https://www.cherryservers.com/blog/install-wireshark-ubuntu
+
+
+
+
+For Opening nrf connect for desktop application use this command:
+./nrfconnect-5.0.2-x86_64.appimage
+
+
